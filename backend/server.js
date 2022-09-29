@@ -3,16 +3,22 @@ import dotenv from 'dotenv';
 import path from 'path';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import mongoose from 'mongoose';
 import { fileURLToPath } from 'url';
 import rootRouter from './routes/root.js';
 import errorHandler from './middleware/errorHandler.js';
 import corsOptions from './config/corsOptions.js';
-import { logger } from './middleware/logger.js';
+import { logger, logEvents } from './middleware/logger.js';
+import connectDB from './config/dbConn.js';
+import userRoutes from './routes/userRoutes.js';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+connectDB();
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -24,6 +30,7 @@ app.use(cookieParser());
 
 app.use('/', express.static(path.join(__dirname, 'public')));
 app.use('/', rootRouter);
+app.use('/users', userRoutes);
 
 app.all('*', (req, res) => {
     res.status(404);
@@ -39,4 +46,12 @@ app.all('*', (req, res) => {
 
 app.use(errorHandler);
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}...`));
+mongoose.connection.once('open', () => {
+    console.log('Successfully connected to MongoDB!');
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}...`));
+});
+
+mongoose.connection.on('error', (err) => {
+    console.log(err);
+    logEvents(`${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}`, 'mongoErrLog.log');
+});
