@@ -1,57 +1,54 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import path from 'path';
-import cors from 'cors';
-import cookieParser from 'cookie-parser';
-import mongoose from 'mongoose';
-import { fileURLToPath } from 'url';
-import rootRouter from './routes/root.js';
-import errorHandler from './middleware/errorHandler.js';
-import corsOptions from './config/corsOptions.js';
-import { logger, logEvents } from './middleware/logger.js';
-import connectDB from './config/dbConn.js';
-import userRoutes from './routes/userRoutes.js';
+require('dotenv').config()
+const express = require('express')
+const path = require('path')
+const { logger, logEvents } = require('./middleware/logger')
+const errorHandler = require('./middleware/errorHandler')
+const cookieParser = require('cookie-parser')
+const cors = require('cors')
+const corsOptions = require('./config/corsOptions')
+const connectDB = require('./config/dbConn')
+const mongoose = require('mongoose')
+const userRoutes = require('./routes/userRoutes')
+// const noteRoutes = require('./routes/noteRoutes');
 
-dotenv.config();
+const app = express()
+const PORT = process.env.PORT || 3500
 
-const app = express();
-const PORT = process.env.PORT || 5000;
+connectDB()
 
-connectDB();
+app.use(logger)
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+app.use(cors(corsOptions))
 
-app.use(logger);
+app.use(express.json())
 
-app.use(cors(corsOptions));
-app.use(express.json());
-app.use(cookieParser());
+app.use(cookieParser())
 
-app.use('/', express.static(path.join(__dirname, 'public')));
-app.use('/', rootRouter);
-app.use('/users', userRoutes);
+app.use('/', express.static(path.join(__dirname, 'public')))
+
+app.use('/', require('./routes/root'))
+app.use('/users', userRoutes)
+// app.use('/notes', require('./routes/noteRoutes'))
 
 app.all('*', (req, res) => {
-    res.status(404);
-
+    res.status(404)
     if (req.accepts('html')) {
-        res.sendFile(path.join(__dirname, 'views', '404.html'));
+        res.sendFile(path.join(__dirname, 'views', '404.html'))
     } else if (req.accepts('json')) {
-        res.json({ message: '404 Not Found!!!' });
+        res.json({ message: '404 Not Found' })
     } else {
-        res.type('txt').send('404 Not Found!!!');
+        res.type('txt').send('404 Not Found')
     }
-});
+})
 
-app.use(errorHandler);
+app.use(errorHandler)
 
 mongoose.connection.once('open', () => {
-    console.log('Successfully connected to MongoDB!');
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}...`));
-});
+    console.log('Connected to MongoDB!')
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}...`))
+})
 
-mongoose.connection.on('error', (err) => {
-    console.log(err);
-    logEvents(`${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}`, 'mongoErrLog.log');
-});
+mongoose.connection.on('error', err => {
+    console.log(err)
+    logEvents(`${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}`, 'mongoErrLog.log')
+})

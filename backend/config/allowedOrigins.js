@@ -4,4 +4,4 @@ const allowedOrigins = [
     'https://dandrepairshop.com'
 ];
 
-export default allowedOrigins;
+module.exports = allowedOrigins;
