@@ -5,11 +5,10 @@ const { logger, logEvents } = require('./middleware/logger')
 const errorHandler = require('./middleware/errorHandler')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
-const corsOptions = require('./config/corsOptions')
 const connectDB = require('./config/dbConn')
 const mongoose = require('mongoose')
 const userRoutes = require('./routes/userRoutes')
-// const noteRoutes = require('./routes/noteRoutes');
+const noteRoutes = require('./routes/noteRoutes')
 
 const app = express()
 const PORT = process.env.PORT || 3500
@@ -18,7 +17,7 @@ connectDB()
 
 app.use(logger)
 
-app.use(cors(corsOptions))
+app.use(cors())
 
 app.use(express.json())
 
@@ -28,7 +27,7 @@ app.use('/', express.static(path.join(__dirname, 'public')))
 
 app.use('/', require('./routes/root'))
 app.use('/users', userRoutes)
-// app.use('/notes', require('./routes/noteRoutes'))
+app.use('/notes', require('./routes/noteRoutes'))
 
 app.all('*', (req, res) => {
     res.status(404)

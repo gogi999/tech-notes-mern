@@ -26,20 +26,20 @@ const createNewUser = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: 'All fields are required!!!' });
     }
 
-    // Check for duplicate
+    // Check for duplicate username
     const duplicate = await User.findOne({ username }).lean().exec();
 
     if (duplicate) {
         return res.status(409).json({ message: 'Duplicate username!!!' });
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Hash password 
+    const hashedPwd = await bcrypt.hash(password, 10);
 
-    const userObj = { username, 'password': hashedPassword, roles };
+    const userObject = { username, "password": hashedPwd, roles };
 
-    // Create and store new user
-    const user = await User.create(userObj);
+    // Create and store new user 
+    const user = await User.create(userObject);
 
     if (user) {
         res.status(201).json({ message: `New user ${username} created!` });
@@ -93,27 +93,29 @@ const updateUser = asyncHandler(async (req, res) => {
 const deleteUser = asyncHandler(async (req, res) => {
     const { id } = req.body;
 
+    // Confirm data
     if (!id) {
         return res.status(400).json({ message: 'User ID Required!!!' });
     }
 
-    const notes = await Note.findOne({ user: id }).lean().exec();
-
-    if (notes?.length) {
+    // Does the user still have assigned notes?
+    const note = await Note.findOne({ user: id }).lean().exec();
+    if (note) {
         return res.status(400).json({ message: 'User has assigned notes!!!' });
     }
 
+    // Does the user exist to delete?
     const user = await User.findById(id).exec();
 
     if (!user) {
         return res.status(400).json({ message: 'User not found!!!' });
     }
 
-    const result = await user.delete();
+    const result = await user.deleteOne();
 
-    const reply = `Ùsername ${result.username} with ID: ${result._id} deleted!!!`;
+    const reply = `Username ${result.username} with ID ${result._id} deleted!`;
 
-    res.status(204).json(reply);
+    res.json(reply)
 });
 
 module.exports = {
