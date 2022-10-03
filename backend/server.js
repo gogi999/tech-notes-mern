@@ -11,7 +11,7 @@ const userRoutes = require('./routes/userRoutes')
 const noteRoutes = require('./routes/noteRoutes')
 
 const app = express()
-const PORT = process.env.PORT || 3500
+const PORT = process.env.PORT || 5000
 
 connectDB()
 
@@ -27,7 +27,7 @@ app.use('/', express.static(path.join(__dirname, 'public')))
 
 app.use('/', require('./routes/root'))
 app.use('/users', userRoutes)
-app.use('/notes', require('./routes/noteRoutes'))
+app.use('/notes', noteRoutes)
 
 app.all('*', (req, res) => {
     res.status(404)
