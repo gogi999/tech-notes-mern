@@ -2,7 +2,7 @@ import {
     createSelector,
     createEntityAdapter
 } from "@reduxjs/toolkit";
-import { apiSlice } from "../../app/api/apiSlice";
+import { apiSlice } from "../../app/api/apiSlice"
 
 const notesAdapter = createEntityAdapter({
     sortComparer: (a, b) => (a.completed === b.completed) ? 0 : a.completed ? 1 : -1
@@ -86,7 +86,7 @@ const selectNotesData = createSelector(
     notesResult => notesResult.data // normalized state object with ids & entities
 )
 
-// getSelectors creates these selectors and we rename them with aliases using destructuring
+//getSelectors creates these selectors and we rename them with aliases using destructuring
 export const {
     selectAll: selectAllNotes,
     selectById: selectNoteById,

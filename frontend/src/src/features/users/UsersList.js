@@ -1,7 +1,8 @@
-import { useGetUsersQuery } from './usersApiSlice'
+import { useGetUsersQuery } from "./usersApiSlice"
 import User from './User'
 
 const UsersList = () => {
+
     const {
         data: users,
         isLoading,
@@ -45,8 +46,7 @@ const UsersList = () => {
             </table>
         )
     }
-    
+
     return content
 }
-
 export default UsersList

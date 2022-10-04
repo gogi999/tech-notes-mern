@@ -9,5 +9,4 @@ const NewNote = () => {
 
     return content
 }
-
-export default NewNote;
+export default NewNote
