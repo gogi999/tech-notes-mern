@@ -7,7 +7,7 @@ const path = require('path')
 const { logger, logEvents } = require('./middleware/logger')
 const errorHandler = require('./middleware/errorHandler')
 const connectDB = require('./config/dbConn')
-
+const corsOptions = require('./config/corsOptions')
 const userRoutes = require('./routes/userRoutes')
 const noteRoutes = require('./routes/noteRoutes')
 const authRoutes = require('./routes/authRoutes')
@@ -17,14 +17,10 @@ const PORT = process.env.PORT || 5000
 
 connectDB()
 
+app.use(cors(corsOptions))
 app.use(logger)
-
-app.use(cors())
-
 app.use(express.json())
-
 app.use(cookieParser())
-
 app.use('/', express.static(path.join(__dirname, 'public')))
 
 app.use('/', require('./routes/root'))
