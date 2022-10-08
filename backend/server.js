@@ -1,32 +1,34 @@
 require('dotenv').config()
+require('express-async-errors')
+const express = require('express')
+const path = require('path')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
-const express = require('express')
 const mongoose = require('mongoose')
-const path = require('path')
 const { logger, logEvents } = require('./middleware/logger')
 const errorHandler = require('./middleware/errorHandler')
-const connectDB = require('./config/dbConn')
 const corsOptions = require('./config/corsOptions')
-const userRoutes = require('./routes/userRoutes')
-const noteRoutes = require('./routes/noteRoutes')
-const authRoutes = require('./routes/authRoutes')
+const connectDB = require('./config/dbConn')
 
 const app = express()
 const PORT = process.env.PORT || 5000
 
 connectDB()
 
-app.use(cors(corsOptions))
 app.use(logger)
+
+app.use(cors(corsOptions))
+
 app.use(express.json())
+
 app.use(cookieParser())
+
 app.use('/', express.static(path.join(__dirname, 'public')))
 
 app.use('/', require('./routes/root'))
-app.use('/auth', authRoutes)
-app.use('/users', userRoutes)
-app.use('/notes', noteRoutes)
+app.use('/auth', require('./routes/authRoutes'))
+app.use('/users', require('./routes/userRoutes'))
+app.use('/notes', require('./routes/noteRoutes'))
 
 app.all('*', (req, res) => {
     res.status(404)
@@ -42,7 +44,7 @@ app.all('*', (req, res) => {
 app.use(errorHandler)
 
 mongoose.connection.once('open', () => {
-    console.log('Connected to MongoDB!')
+    console.log('Connected to MongoDB')
     app.listen(PORT, () => console.log(`Server running on port ${PORT}...`))
 })
 

@@ -52,6 +52,7 @@
   color: var(--COLOR);
   display: grid;
   place-content: center;
+  cursor: pointer;
 }
 
 .icon-button:hover,
@@ -94,8 +95,7 @@ a {
   text-decoration: none;
 }
 
-a,
-a:visited {
+a:any-link {
   color: var(--LINK-COLOR);
 }
 
@@ -186,10 +186,6 @@ a:focus-visible {
   font-size: 1rem;
   width: auto;
   height: auto;
-}
-
-.icon-button {
-  cursor: pointer;
 }
 
 /* || TABLES - GENERAL */
@@ -286,6 +282,10 @@ tr {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.form__submit-button {
+  cursor: pointer;
 }
 
 .form__input,

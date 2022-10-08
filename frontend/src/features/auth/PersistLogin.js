@@ -1,9 +1,9 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { Link, Outlet } from 'react-router-dom'
+import { Outlet, Link } from "react-router-dom"
+import { useEffect, useRef, useState } from 'react'
+import { useRefreshMutation } from "./authApiSlice"
+import usePersist from "../../hooks/usePersist"
 import { useSelector } from 'react-redux'
-import { useRefreshMutation } from './authApiSlice'
-import { selectCurrentToken } from './authSlice'
-import usePersist from '../../hooks/usePersist'
+import { selectCurrentToken } from "./authSlice"
 
 const PersistLogin = () => {
 
@@ -59,7 +59,7 @@ const PersistLogin = () => {
         console.log('error')
         content = (
             <p className='errmsg'>
-                {error.data?.message}
+                {`${error?.data?.message} - `}
                 <Link to="/login">Please login again</Link>.
             </p>
         )
@@ -74,5 +74,4 @@ const PersistLogin = () => {
 
     return content
 }
-
 export default PersistLogin

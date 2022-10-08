@@ -23,20 +23,22 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 
     // If you want, handle other status codes, too
     if (result?.error?.status === 403) {
-        console.log('Sending refresh token!')
+        console.log('sending refresh token')
 
-        // Send refresh token to get new access token
+        // send refresh token to get new access token 
         const refreshResult = await baseQuery('/auth/refresh', api, extraOptions)
 
         if (refreshResult?.data) {
-            // Store the new token
+
+            // store the new token 
             api.dispatch(setCredentials({ ...refreshResult.data }))
 
-            // Retry original query with new access token
+            // retry original query with new access token
             result = await baseQuery(args, api, extraOptions)
         } else {
+
             if (refreshResult?.error?.status === 403) {
-                refreshResult.error.data.message = 'Your login has expired!!!'
+                refreshResult.error.data.message = "Your login has expired."
             }
             return refreshResult
         }
@@ -48,5 +50,5 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 export const apiSlice = createApi({
     baseQuery: baseQueryWithReauth,
     tagTypes: ['Note', 'User'],
-    endpoints: (builder) => ({})
-});
+    endpoints: builder => ({})
+})

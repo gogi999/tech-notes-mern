@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 
 const Public = () => {
     const content = (
@@ -7,9 +7,7 @@ const Public = () => {
                 <h1>Welcome to <span className="nowrap">Dan D. Repairs!</span></h1>
             </header>
             <main className="public__main">
-                <p>
-                    Located in Beautiful Downtown Foo City, Dan D. Repairs  provides a trained staff ready to meet your tech repair needs.
-                </p>
+                <p>Located in Beautiful Downtown Foo City, Dan D. Repairs  provides a trained staff ready to meet your tech repair needs.</p>
                 <address className="public__addr">
                     Dan D. Repairs<br />
                     555 Foo Drive<br />
@@ -24,9 +22,7 @@ const Public = () => {
             </footer>
         </section>
 
-    );
-
-    return content;
+    )
+    return content
 }
-
-export default Public;
+export default Public
